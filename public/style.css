@@ -1,59 +1,43 @@
-* {
-  box-sizing: border-box;
-}
-
 body {
-  font-family:sans-serif;
-  margin: 25px;
-  color: #222;
-  background-color: #f5f5f5;
+  background: #f5f5dc;
+  font-family: 'MedievalSharp', cursive;
+  color: #3b2f2f;
+  text-align: center;
+  padding: 2rem;
 }
 
 h1 {
-  font-weight: bold;
-  
-}
-
-p {
-  max-width: 900px;
+  font-size: 3rem;
+  margin-bottom: 1rem;
 }
 
 form {
-  margin-bottom: 25px;
-  padding: 15px;
-  background-color: #87D37C;
-  display: inline-block;
-  width: 100%;
-  max-width: 340px;
+  margin: 1.5rem auto;
+  padding: 1rem;
+  max-width: 500px;
+  border: 2px solid #663300;
+  background: #fff8dc;
+  border-radius: 10px;
+}
+
+input[type="text"], input[type="number"], input[type="date"] {
+  display: block;
+  width: 90%;
+  margin: 0.5rem auto;
+  padding: 0.5rem;
   border-radius: 5px;
 }
 
-input {
-  display: block;
-  margin-bottom: 10px;
-  padding: 5px;
-  width: 100%;
-  border: 1px solid lightgrey;
-  border-radius: 3px;
-  font-size: 16px;
-}
-
-input[type=submit] {
-  font-size: 16px;
-  border-radius: 3px;
-  background-color: #E4F1FE;
-  border: 1px solid grey;
-  box-shadow: 2px 2px #999;
+input[type="submit"] {
+  background-color: #8b0000;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-input[type=submit]:hover {
-  background-color: #FFFEC4;
-}
-
-code {
-  font-family: monospace;
-  font-size: 1.2em;
-  background-color: #FFFEC4;
-  padding: 2px;
+.viking-img {
+  max-width: 120px;
+  margin-bottom: 1rem;
 }

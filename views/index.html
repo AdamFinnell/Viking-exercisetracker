@@ -1,46 +1,41 @@
+<!-- /public/index.html -->
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Exercise Tracker | freeCodeCamp</title>
-    <link rel="shortcut icon" href="https://cdn.freecodecamp.org/universal/favicons/favicon.ico"  type="image/x-icon" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
-    <link href="style.css" rel="stylesheet" type="text/css" />
-  </head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Viking Exercise Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+  <div class="container">
+    <img src="https://th.bing.com/th/id/OIP.hU7BtbmtXDbp8e5j6cbh2gHaFj?r=0&rs=1&pid=ImgDetMain&cb=idpwebp2&o=7&rm=3" alt="Viking" class="viking-img"/>
+    <h1>🏋️‍♂️ Viking Exercise Tracker 🛡️</h1>
 
-  <body>
-    <div class="container">
-      <h1>Exercise tracker</h1>
-      <form action="/api/users" method="post">
-        <h2>Create a New User</h2>
-        <p><code>POST /api/users</code></p>
-        <input id="uname" type="text" name="username" placeholder="username" />
-        <input type="submit" value="Submit" />
-      </form>
-      <form action="/api/users/:_id/exercises" id="exercise-form" method="post">
-        <h2>Add exercises</h2>
-        <p><code>POST /api/users/:_id/exercises</code></p>
-        <input id="uid" type="text" name=":_id" placeholder=":_id" />
-        <input id="desc" type="text" name="description" placeholder="description*" />
-        <input id="dur" type="text" name="duration" placeholder="duration* (mins.)" />
-        <input id="date" type="text" name="date" placeholder="date (yyyy-mm-dd)" />
-        <input type="submit" value="Submit" />
-      </form>
-      <p>
-        <strong>GET user's exercise log: </strong>
-        <code>GET /api/users/:_id/logs?[from][&amp;to][&amp;limit]</code>
-      </p>
-      <p><strong>[ ]</strong> = optional</p>
-      <p><strong>from, to</strong> = dates (yyyy-mm-dd); <strong>limit</strong> = number</p>
-    </div>
-    <script>
-      const exerciseForm = document.getElementById("exercise-form");
+    <form action="/api/users" method="post">
+      <h2>Create a Warrior</h2>
+      <input type="text" name="username" placeholder="Viking Name" required />
+      <input type="submit" value="Summon Viking" />
+    </form>
 
-      exerciseForm.addEventListener("submit", () => {
-        const userId = document.getElementById("uid").value;
-        exerciseForm.action = `/api/users/${userId}/exercises`;
+    <form id="exercise-form" method="post">
+      <h2>Log Battle Training</h2>
+      <input type="text" name=":_id" placeholder="Viking ID" required />
+      <input type="text" name="description" placeholder="Battle Exercise" required />
+      <input type="number" name="duration" placeholder="Minutes Trained" required />
+      <input type="date" name="date" />
+      <input type="submit" value="Record Glory" />
+    </form>
+  </div>
 
-        exerciseForm.submit();
-      });
-    </script>
-  </body>
+  <script>
+    const form = document.getElementById('exercise-form');
+    form.addEventListener('submit', () => {
+      const userId = form.querySelector('[name=":_id"]').value;
+      form.action = `/api/users/${userId}/exercises`;
+    });
+  </script>
+</body>
 </html>
+
