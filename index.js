@@ -13,7 +13,6 @@ function hideLoading(button, originalText) {
     button.disabled = false;
 }
 
-// Helper function to display results
 function displayResult(elementId, data, isError = false) {
     const element = document.getElementById(elementId);
     
@@ -30,9 +29,7 @@ function displayResult(elementId, data, isError = false) {
     }
 }
 
-// API Functions that connect to your Express backend
 
-// Create User API
 async function createUser(userData) {
     try {
         const response = await fetch(`${API_BASE_URL}/api/users`, {
@@ -54,7 +51,6 @@ async function createUser(userData) {
     }
 }
 
-// Add Exercise API
 async function addExercise(exerciseData) {
     try {
         const { userId, ...exercisePayload } = exerciseData;
@@ -78,12 +74,12 @@ async function addExercise(exerciseData) {
     }
 }
 
-// Get Exercise Log API
+
 async function getExerciseLog(params) {
     try {
         const { userId, from, to, limit } = params;
         
-        // Build query string
+      
         const queryParams = new URLSearchParams();
         if (from) queryParams.set('from', from);
         if (to) queryParams.set('to', to);
@@ -105,7 +101,7 @@ async function getExerciseLog(params) {
     }
 }
 
-// Get All Users API (bonus feature)
+
 async function getAllUsers() {
     try {
         const response = await fetch(`${API_BASE_URL}/api/users`);
@@ -120,10 +116,9 @@ async function getAllUsers() {
     }
 }
 
-// Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Create User Form
+   
     document.getElementById('create-user-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const button = e.target.querySelector('button');
@@ -141,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
             displayResult('user-result', result);
             e.target.reset();
             
-            // Show success message with Viking ID
+            
             setTimeout(() => {
                 displayResult('user-result', `⚔️ New Viking created successfully! Viking ID: ${result._id}`, false);
             }, 2000);
@@ -153,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Add Exercise Form
+    
     document.getElementById('add-exercise-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const button = e.target.querySelector('button');
@@ -163,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(e.target);
             const exerciseData = Object.fromEntries(formData);
             
-            // Validation
+           
             if (!exerciseData.userId || exerciseData.userId.trim() === '') {
                 throw new Error('Viking ID is required');
             }
@@ -185,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Get Exercise Log Form
+    
     document.getElementById('get-log-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const button = e.target.querySelector('button');
@@ -201,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const result = await getExerciseLog(params);
             
-            // Display the log in a user-friendly format
+            
             const logElement = document.getElementById('log-result');
             logElement.innerHTML = `
                 <div class="result-section">
@@ -236,11 +231,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Add a "Load All Vikings" button functionality (bonus feature)
+    
     addLoadAllUsersButton();
 });
 
-// Bonus: Add a button to load all users
+
 function addLoadAllUsersButton() {
     const userSection = document.querySelector('#create-user-form').closest('.section');
     const loadUsersBtn = document.createElement('button');
@@ -281,7 +276,7 @@ function addLoadAllUsersButton() {
                 </div>
             `;
             
-            // Remove previous users list if exists
+            
             const existingList = userSection.querySelector('.all-users-list');
             if (existingList) {
                 existingList.remove();
@@ -300,7 +295,7 @@ function addLoadAllUsersButton() {
     userSection.appendChild(loadUsersBtn);
 }
 
-// Initialize app
+
 console.log('🗡️ Viking Exercise Tracker initialized!');
 console.log('⚔️ Ready to connect to your Express/MongoDB backend');
 console.log('🛡️ API Base URL:', API_BASE_URL);
