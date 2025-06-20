@@ -22,7 +22,7 @@
 		"node",
 		"express"
 	],
-	"author": "",
+	"author": "Adam Finnell II",
 	"bugs": {
 		"url": "https://github.com/freeCodeCamp/boilerplate-project-exercisetracker/issues"
 	},
