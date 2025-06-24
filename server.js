@@ -1,6 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+require('dotenv').config();
+
+mongoose.connect(process.env.MONGO_URI, {
+  dbName: 'exercise-tracker',
+})
+.then(() => console.log('🧠 Connected to MongoDB Atlas!'))
+.catch(err => console.error('❌ Connection Error:', err));
+
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
@@ -12,7 +20,7 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
 
 
 const userSchema = new mongoose.Schema({
