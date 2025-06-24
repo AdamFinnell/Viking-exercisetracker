@@ -68,7 +68,8 @@ app.post('/api/users/:_id/exercises', async (req, res) => {
       username: user.username,
       date: saved.date.toDateString(), 
       duration: saved.duration,
-      description: saved.description
+      description: saved.description,
+      date: saved.date.toDateString()
     });
   } catch (err) {
     res.status(500).json({ error: 'Failed to add exercise' });
