@@ -4,10 +4,10 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 mongoose.connect(process.env.MONGO_URI, {
-  dbName: 'exercise-tracker',
-})
-.then(() => console.log('🧠 Connected to MongoDB Atlas!'))
-.catch(err => console.error('❌ Connection Error:', err));
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
 
 const cors = require('cors');
 const bodyParser = require('body-parser');
