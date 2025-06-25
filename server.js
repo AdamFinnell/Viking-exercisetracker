@@ -12,15 +12,21 @@ if (!process.env.MONGO_URI) {
   process.exit(1);
 }
 
-mongoose.connect(process.env.MONGO_URI, options)
-  .then(() => {
-    console.log('✅ Connected to MongoDB');
-    app.listen(PORT, () => console.log(`⚔️ Server running at port ${PORT}`));
-  })
-  .catch(err => {
-    console.error('❌ Mongo connection failed', err);
-    process.exit(1);
-  });
+const uri = process.env.MONGO_URI;
+if (!uri) {
+  console.error('❌ Missing MONGO_URI in environment!');
+  process.exit(1);
+}
+mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('✅ MongoDB connected'))
+.catch(err => {
+  console.error('❌ MongoDB connection failed:', err);
+  process.exit(1);
+});
+
 
 app.use(cors());
 app.use(express.static('public'));
