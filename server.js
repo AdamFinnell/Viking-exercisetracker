@@ -3,11 +3,13 @@ const app = express()
 const cors = require('cors')
 require('dotenv').config()
 const bodyParser = require('body-parser');
+
 app.use(cors())
 app.use(express.static('public'))
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
 });
+
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended:false}));
 
@@ -85,7 +87,7 @@ const addExercise = async (id,description,duration,date) =>{
   }
 }
 
-//EDIT METHODS
+
 
 app.post('/api/users',async (req,res) =>{
 
