@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 
 const mongoose = require('mongoose');
 
-mongoose.connect(process.env.MONGO)
+mongoose.connect(process.env.MONGO_URI)
 .then(console.log("Connected"))
 .catch(err => console.error(err));
 
