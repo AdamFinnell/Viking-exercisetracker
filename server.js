@@ -1,3 +1,4 @@
+app.use(cors());
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -7,11 +8,11 @@ require('dotenv').config();
 
 console.log('🔌 Connecting to MongoDB:', process.env.MONGO_URI);
 
-// Middleware
-app.use(cors());
-app.use(express.urlencoded({ extended: true })); // form data
-app.use(express.json()); // json data
-app.use(express.static('public')); // serve index.html
+
+
+app.use(express.urlencoded({ extended: true })); 
+app.use(express.json()); 
+app.use(express.static('public')); 
 
 
 mongoose.connect(process.env.MONGO_URI, {
