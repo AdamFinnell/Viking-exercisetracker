@@ -16,8 +16,8 @@ const exerciseSchema = new mongoose.Schema({
   },
   date: {
     type: Date,
-    default: Date.now
+    required: true
   }
-}, { timestamps: true });
+});
 
 module.exports = mongoose.model('Exercise', exerciseSchema);
