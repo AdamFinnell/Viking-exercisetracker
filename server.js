@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
 });
 
 app.use(express.json());
-app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 const mongoose = require('mongoose');
 
@@ -37,12 +37,12 @@ const checkValidDate = (date) => !isNaN(Date.parse(date));
 
 const addExercise = async (id,description,duration,date) =>{
   try{
-    //check user
+    
     const user = await User.findById(id);
     if(!user){
       return null;
     }
-    //check date
+    
     let newDate;
     if(!date || !checkValidDate(date)){
       newDate = new Date();
@@ -50,14 +50,14 @@ const addExercise = async (id,description,duration,date) =>{
     else{
       newDate = new Date(date);
     }
-    //create and add exercise into the collection
+   
     const exercise = await Exercise.create({
       userId: user._id,
       date: newDate,
       duration: Number(duration),
       description: description
     });
-    //console.log("Exercise added");
+    
     return exercise;
   }
   catch(err){
@@ -68,95 +68,105 @@ const addExercise = async (id,description,duration,date) =>{
 
 
 
-app.post('/api/users',async (req,res) =>{
+app.post('/api/users', async (req, res) => {
+  try {
+    const { username } = req.body;
+    if (!username) return res.status(400).json({ error: 'Username is required' });
 
-  const { username }= req.body;
-  if (!username) return res.status(400).json({ error: "Username is required" });
-  if(username){
-    const user = await addUsers(username);
-    return res.status(201).json({username:user.username,_id:user._id});
-  }
+    const newUser = new User({ username });
+    await newUser.save();
 
-})
-
-app.get('/api/users',async (req,res) =>{
-
-  const users = await User.find({},'_id username');
-  res.status(200).json(users);
-
-})
-
-app.post('/api/users/:_id/exercises', async (req,res) =>{
-  try{
-
-    const {_id} = req.params;
-    const {description,duration,date} = req.body;
-    if (!description || !duration || isNaN(duration)) {
-      return res.status(400).json({ error: "Missing or invalid fields" });
-    }
-    const user = await User.findById(_id);
-
-    if(!user){
-      return res.status(404).json({error:"User not found" });
-    }
-
-    const exercise = await addExercise(_id,description,duration,date);
-    if(!exercise) return res.status(400).json({error:"Exercise creation failed"});
-    
     res.json({
-      username: user.username,
-      description: exercise.description,
-      duration:exercise.duration,
-      date:exercise.date.toDateString(),
-      _id:user._id
+      username: newUser.username,
+      _id: newUser._id
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await User.find({}, '_id username');
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.post('/api/users/:_id/exercises', async (req, res) => {
+  try {
+    const { _id } = req.params;
+    const { description, duration, date } = req.body;
+
+    if (!description || !duration) {
+      return res.status(400).json({ error: 'Required fields missing' });
+    }
+
+    const user = await User.findById(_id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const exercise = new Exercise({
+      userId: _id,
+      description,
+      duration: parseInt(duration),
+      date: date ? new Date(date) : new Date()
     });
 
-  }
-  catch(err){
-    console.error(err);
-    res.status(500).json({error:"Server error"});
-  }
-})
+    await exercise.save();
 
-app.get('/api/users/:_id/logs',async (req,res) => {
-  try{
-    const {_id} = req.params;
-    const {from,to,limit} = req.query;
-    const user = await User.findById(_id);
-    if(!user){
-      return res.status(404).json({error:"User not found"});
-    }
-    let dateFilter = {};
-    if(from && !isNaN(Date.parse(from))){
-      dateFilter.$gte = new Date(from);
-    }
-    if(to && !isNaN(Date.parse(to))){
-      dateFilter.$lte = new Date(to);
-    }
-    let query = {userId:_id};
-    if(from || to){
-      query.date = dateFilter;
-    }
-    const exercises = await Exercise.find(query,"description duration date -_id").limit(Number(limit) || 0);
-    
-    const formattedLogs = exercises.map(ex=>({
-      description:ex.description,
-      duration:ex.duration,
-      date:ex.date.toDateString()
-    })); 
-
-    res.status(200).json({
-      _id:user._id,
+    res.json({
+      _id: user._id,
       username: user.username,
-      count:formattedLogs.length,
-      log: formattedLogs
-    })
-  }
-  catch(err){
+      description: exercise.description,
+      duration: exercise.duration,
+      date: exercise.date.toDateString()
+    });
+  } catch (err) {
     console.error(err);
-    res.status(500).json({error:"Server error"});
+    res.status(500).json({ error: 'Server error' });
   }
-})
+});
+
+app.get('/api/users/:_id/logs', async (req, res) => {
+  try {
+    const { _id } = req.params;
+    const { from, to, limit } = req.query;
+
+    const user = await User.findById(_id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const query = { userId: _id };
+    if (from || to) {
+      query.date = {};
+      if (from) query.date.$gte = new Date(from);
+      if (to) query.date.$lte = new Date(to);
+    }
+
+    let exercisesQuery = Exercise.find(query).select('description duration date');
+    if (limit) exercisesQuery = exercisesQuery.limit(parseInt(limit));
+
+    const exercises = await exercisesQuery.exec();
+
+    const log = exercises.map(e => ({
+      description: e.description,
+      duration: e.duration,
+      date: e.date.toDateString()
+    }));
+
+    res.json({
+      _id: user._id,
+      username: user.username,
+      count: log.length,
+      log
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('🚀 App is running on port ' + listener.address().port);
