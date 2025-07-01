@@ -3,6 +3,8 @@ const app = express()
 const cors = require('cors')
 require('dotenv').config()
 const bodyParser = require('body-parser');
+const User = require('./models/User.js');
+const Exercise = require('./models/Exercise.js');
 
 app.use(cors())
 app.use(express.static('public'))
@@ -19,29 +21,6 @@ mongoose.connect(process.env.MONGO_URI)
 .then(console.log("Connected"))
 .catch(err => console.error(err));
 
-const Schema = mongoose.Schema;
-//create schema
-  //user schema
-const userSchema = new Schema({
-  username:String
-});
-const User = mongoose.model('user',userSchema);
-  //exercise schema
-const exerciseSchema = new Schema({
-  //add foreign key
-  userId:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'user',
-    required: true
-  },
-  description:String,
-  duration:Number,
-  date:{
-    type:Date,
-    default:Date.now
-  }
-});
-const Exercise = mongoose.model('exercise',exerciseSchema);
 
 const addUsers = async (username) =>{  
   try{

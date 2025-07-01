@@ -299,4 +299,3 @@ function addLoadAllUsersButton() {
 console.log('🗡️ Viking Exercise Tracker initialized!');
 console.log('⚔️ Ready to connect to your Express/MongoDB backend');
 console.log('🛡️ API Base URL:', API_BASE_URL);
-res.json(usersArray); 
