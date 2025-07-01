@@ -7,14 +7,13 @@
 		"start": "node server.js"
 	},
 	"dependencies": {
-		"body-parser": "^2.2.0",
-		"cors": "^2.8.5",
-		"dotenv": "^8.6.0",
-		"express": "^4.21.2",
-		"mongodb": "^6.17.0",
-		"mongoose": "^8.16.0",
-		"nodemon": "^3.1.10"
-	},
+  "body-parser": "^1.20.2",
+  "cors": "^2.8.5",
+  "dotenv": "^16.3.1",
+  "express": "^4.21.2",
+  "mongodb": "^6.17.0",
+  "mongoose": "^8.16.0"
+},
 	"repository": {
 		"url": "git+https://github.com/freeCodeCamp/boilerplate-project-exercisetracker.git"
 	},
@@ -27,5 +26,8 @@
 	"bugs": {
 		"url": "https://github.com/freeCodeCamp/boilerplate-project-exercisetracker/issues"
 	},
-	"homepage": "https://github.com/freeCodeCamp/boilerplate-project-exercisetracker#readme"
+	"homepage": "https://github.com/freeCodeCamp/boilerplate-project-exercisetracker#readme",
+	"devDependencies": {
+		"nodemon": "^3.1.10"
+	}
 }
