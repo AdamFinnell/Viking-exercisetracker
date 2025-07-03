@@ -1,270 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exercise Tracker</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
             padding: 20px;
-            line-height: 1.6;
         }
-
         .container {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .form-section {
             background: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #667eea;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
-        .form-section h2 {
+        h1 {
             color: #333;
-            margin-bottom: 20px;
-            font-size: 1.4em;
+            text-align: center;
+            margin-bottom: 30px;
         }
-
-        .form-group {
-            margin-bottom: 20px;
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 5px;
         }
-
+        h2 {
+            color: #444;
+            margin-top: 0;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
         label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
+            margin-bottom: 5px;
+            font-weight: bold;
             color: #555;
         }
-
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
+        input[type="text"], input[type="number"], input[type="date"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             font-size: 16px;
-            transition: all 0.3s ease;
         }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
         button {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background-color: #007bff;
             color: white;
-            padding: 12px 25px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: 4px;
             font-size: 16px;
-            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 120px;
+            transition: background-color 0.3s;
         }
-
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            background-color: #0056b3;
         }
-
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .user-list {
-            background: white;
+        .api-info {
+            background: #e9ecef;
             padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .user-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            border: 1px solid #e1e5e9;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .user-item:hover {
-            background: #f8f9fa;
-            transform: translateX(5px);
-        }
-
-        .user-info {
-            flex: 1;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .user-id {
-            font-size: 0.9em;
-            color: #666;
-            font-family: monospace;
-        }
-
-        .user-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-small {
-            padding: 8px 15px;
-            font-size: 14px;
-            min-width: auto;
-        }
-
-        .log-section {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #28a745;
-        }
-
-        .exercise-log {
+            border-radius: 5px;
             margin-top: 20px;
         }
-
-        .exercise-item {
+        .api-info h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        .api-info code {
             background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .api-info ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .api-info li {
             margin-bottom: 10px;
-            border-left: 3px solid #667eea;
-        }
-
-        .exercise-description {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .exercise-details {
-            display: flex;
-            gap: 20px;
-            font-size: 0.9em;
-            color: #666;
-        }
-
-        .filters {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .filters input {
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .status-message {
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
-
-        .status-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .status-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
+            padding: 8px;
             background: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-number {
-            font-size: 2em;
-            font-weight: 700;
-            color: #667eea;
-        }
-
-        .stat-label {
-            color: #666;
-            font-size: 0.9em;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-        }
-
-        @media (max-width: 768px) {
-            .filters {
-                flex-direction: column;
-            }
-            
-            .user-actions {
-                flex-direction: column;
-            }
-            
-            .exercise-details {
-                flex-direction: column;
-                gap: 5px;
-            }
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -272,80 +93,64 @@
     <div class="container">
         <h1>Exercise Tracker</h1>
         
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-number" id="totalUsers">0</div>
-                <div class="stat-label">Total Users</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalExercises">0</div>
-                <div class="stat-label">Total Exercises</div>
-            </div>
-        </div>
-
         <div class="form-section">
-            <h2>Create New User</h2>
-            <form id="userForm">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
+            <h2>Create a New User</h2>
+            <form action="/api/users" method="post">
+                <label for="uname">Username:</label>
+                <input id="uname" type="text" name="username" placeholder="Enter username" required>
                 <button type="submit">Create User</button>
             </form>
         </div>
 
         <div class="form-section">
-            <h2>Add Exercise</h2>
-            <form id="exerciseForm">
-                <div class="form-group">
-                    <label for="userSelect">Select User</label>
-                    <select id="userSelect" name="userId" required>
-                        <option value="">Select a user...</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="description">Exercise Description</label>
-                    <input type="text" id="description" name="description" required>
-                </div>
-                <div class="form-group">
-                    <label for="duration">Duration (minutes)</label>
-                    <input type="number" id="duration" name="duration" min="1" required>
-                </div>
-                <div class="form-group">
-                    <label for="date">Date (optional)</label>
-                    <input type="date" id="date" name="date">
-                </div>
+            <h2>Add exercises</h2>
+            <form action="/api/users/:_id/exercises" method="post">
+                <label for="uid">User ID:</label>
+                <input id="uid" type="text" name="userId" placeholder="Enter user ID" required>
+                
+                <label for="desc">Description:</label>
+                <input id="desc" type="text" name="description" placeholder="Enter exercise description" required>
+                
+                <label for="dur">Duration (mins):</label>
+                <input id="dur" type="number" name="duration" placeholder="Enter duration in minutes" required>
+                
+                <label for="date">Date (yyyy-mm-dd):</label>
+                <input id="date" type="date" name="date">
+                
                 <button type="submit">Add Exercise</button>
             </form>
         </div>
 
-        <div class="user-list">
-            <h2>Users</h2>
-            <div id="usersList"></div>
+        <div class="api-info">
+            <h3>API Endpoints</h3>
+            <ul>
+                <li><code>POST /api/users</code> - Create a new user</li>
+                <li><code>GET /api/users</code> - Get all users</li>
+                <li><code>POST /api/users/:_id/exercises</code> - Add an exercise</li>
+                <li><code>GET /api/users/:_id/logs</code> - Get user's exercise log</li>
+            </ul>
+            
+            <h3>Query Parameters for Logs</h3>
+            <ul>
+                <li><code>from</code> - Start date (yyyy-mm-dd format)</li>
+                <li><code>to</code> - End date (yyyy-mm-dd format)</li>
+                <li><code>limit</code> - Number of exercises to return</li>
+            </ul>
+            
+            <h3>Example Usage</h3>
+            <p><code>GET /api/users/60f7d2e2f5a2c3b4d5e6f7g8/logs?from=2021-01-01&to=2021-12-31&limit=10</code></p>
         </div>
-
-        <div class="log-section">
-            <h2>Exercise Log</h2>
-            <div class="form-group">
-                <label for="logUserSelect">Select User for Log</label>
-                <select id="logUserSelect">
-                    <option value="">Select a user...</option>
-                </select>
-            </div>
-            <div class="filters">
-                <input type="date" id="fromDate" placeholder="From date">
-                <input type="date" id="toDate" placeholder="To date">
-                <input type="number" id="limit" placeholder="Limit" min="1">
-                <button onclick="fetchLog()">Get Log</button>
-            </div>
-            <div id="logResults"></div>
-        </div>
-
-        <div id="statusMessage"></div>
     </div>
-
     <script>
-       
+        // Handle form submission for adding exercises
+        document.querySelector('form[action="/api/users/:_id/exercises"]').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userId = document.getElementById('uid').value;
+            if (userId) {
+                this.action = `/api/users/${userId}/exercises`;
+                this.submit();
+            }
+        });
     </script>
 </body>
 </html>
