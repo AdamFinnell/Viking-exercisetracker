@@ -502,6 +502,197 @@
         // console.log('- window.api.getUserLogs(userId, from, to, limit)');
 
 
+// const express = require('express');
+// const cors = require('cors');
+// const mongoose = require('mongoose');
+// require('dotenv').config();
+
+// const app = express();
+
+// // Basic Configuration
+// const port = process.env.PORT || 3000;
+
+// // Middleware
+// app.use(cors());
+// app.use(express.static('public'));
+// app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+
+// // MongoDB Connection
+// mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/exercise-tracker', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
+
+// // User Schema
+// const userSchema = new mongoose.Schema({
+//   username: { type: String, required: true, unique: true }
+// });
+
+// const User = mongoose.model('User', userSchema);
+
+// // Exercise Schema
+// const exerciseSchema = new mongoose.Schema({
+//   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+//   description: { type: String, required: true },
+//   duration: { type: Number, required: true },
+//   date: { type: Date, default: Date.now }
+// });
+
+// const Exercise = mongoose.model('Exercise', exerciseSchema);
+
+// // Root route
+// app.get('/', (req, res) => {
+//   res.sendFile(__dirname + '/views/index.html');
+// });
+
+// // POST /api/users - Create new user
+// app.post('/api/users', async (req, res) => {
+//   try {
+//     const { username } = req.body;
+    
+//     if (!username) {
+//       return res.json({ error: 'Username is required' });
+//     }
+
+//     const newUser = new User({ username });
+//     const savedUser = await newUser.save();
+    
+//     res.json({
+//       username: savedUser.username,
+//       _id: savedUser._id
+//     });
+//   } catch (error) {
+//     if (error.code === 11000) {
+//       res.json({ error: 'Username already exists' });
+//     } else {
+//       res.json({ error: 'Error creating user' });
+//     }
+//   }
+// });
+
+// // GET /api/users - Get all users
+// app.get('/api/users', async (req, res) => {
+//   try {
+//     const users = await User.find({}, 'username _id');
+//     res.json(users);
+//   } catch (error) {
+//     res.json({ error: 'Error fetching users' });
+//   }
+// });
+
+// // POST /api/users/:_id/exercises - Add exercise
+// app.post('/api/users/:_id/exercises', async (req, res) => {
+//   try {
+//     const { _id } = req.params;
+//     const { description, duration, date } = req.body;
+
+//     // Validate user exists
+//     const user = await User.findById(_id);
+//     if (!user) {
+//       return res.json({ error: 'User not found' });
+//     }
+
+//     // Validate required fields
+//     if (!description || !duration) {
+//       return res.json({ error: 'Description and duration are required' });
+//     }
+
+//     // Handle date - use provided date or current date
+//     let exerciseDate = date ? new Date(date) : new Date();
+    
+//     // Validate date
+//     if (date && isNaN(exerciseDate.getTime())) {
+//       return res.json({ error: 'Invalid date format' });
+//     }
+
+//     const newExercise = new Exercise({
+//       userId: _id,
+//       description,
+//       duration: parseInt(duration),
+//       date: exerciseDate
+//     });
+
+//     const savedExercise = await newExercise.save();
+
+//     res.json({
+//       username: user.username,
+//       description: savedExercise.description,
+//       duration: savedExercise.duration,
+//       date: savedExercise.date.toDateString(),
+//       _id: user._id
+//     });
+//   } catch (error) {
+//     res.json({ error: 'Error adding exercise' });
+//   }
+// });
+
+// // GET /api/users/:_id/logs - Get user's exercise log
+// app.get('/api/users/:_id/logs', async (req, res) => {
+//   try {
+//     const { _id } = req.params;
+//     const { from, to, limit } = req.query;
+
+//     // Validate user exists
+//     const user = await User.findById(_id);
+//     if (!user) {
+//       return res.json({ error: 'User not found' });
+//     }
+
+//     // Build query for exercises
+//     let query = { userId: _id };
+    
+//     // Add date filters if provided
+//     if (from || to) {
+//       query.date = {};
+//       if (from) {
+//         query.date.$gte = new Date(from);
+//       }
+//       if (to) {
+//         query.date.$lte = new Date(to);
+//       }
+//     }
+
+//     // Get exercises with optional limit
+//     let exerciseQuery = Exercise.find(query).sort({ date: -1 });
+    
+//     if (limit) {
+//       exerciseQuery = exerciseQuery.limit(parseInt(limit));
+//     }
+
+//     const exercises = await exerciseQuery;
+
+//     // Format response
+//     const log = exercises.map(exercise => ({
+//       description: exercise.description,
+//       duration: exercise.duration,
+//       date: exercise.date.toDateString()
+//     }));
+
+//     res.json({
+//       username: user.username,
+//       count: exercises.length,
+//       _id: user._id,
+//       log
+//     });
+//   } catch (error) {
+//     res.json({ error: 'Error fetching exercise log' });
+//   }
+// });
+
+// // Error handling middleware
+// app.use((req, res) => {
+//   res.status(404).json({ error: 'Route not found' });
+// });
+
+// const listener = app.listen(port, () => {
+//   console.log('Your app is listening on port ' + listener.address().port);
+// });
+
+// module.exports = app;
+
+
+
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -555,12 +746,13 @@ app.post('/api/users', async (req, res) => {
       return res.json({ error: 'Username is required' });
     }
 
-    const newUser = new User({ username });
+    const newUser = new User({ username: username.trim() });
     const savedUser = await newUser.save();
     
+    // Return object with username and _id properties
     res.json({
-      username: savedUser.username,
-      _id: savedUser._id
+      _id: savedUser._id,
+      username: savedUser.username
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -574,8 +766,13 @@ app.post('/api/users', async (req, res) => {
 // GET /api/users - Get all users
 app.get('/api/users', async (req, res) => {
   try {
-    const users = await User.find({}, 'username _id');
-    res.json(users);
+    const users = await User.find({}).select('username _id');
+    // Ensure we return an array of objects with proper field order
+    const userArray = users.map(user => ({
+      _id: user._id,
+      username: user.username
+    }));
+    res.json(userArray);
   } catch (error) {
     res.json({ error: 'Error fetching users' });
   }
@@ -608,19 +805,20 @@ app.post('/api/users/:_id/exercises', async (req, res) => {
 
     const newExercise = new Exercise({
       userId: _id,
-      description,
-      duration: parseInt(duration),
+      description: description,
+      duration: Number(duration),
       date: exerciseDate
     });
 
     const savedExercise = await newExercise.save();
 
+    // Return user object with exercise fields added
     res.json({
+      _id: user._id,
       username: user.username,
       description: savedExercise.description,
       duration: savedExercise.duration,
-      date: savedExercise.date.toDateString(),
-      _id: user._id
+      date: savedExercise.date.toDateString()
     });
   } catch (error) {
     res.json({ error: 'Error adding exercise' });
@@ -646,34 +844,40 @@ app.get('/api/users/:_id/logs', async (req, res) => {
     if (from || to) {
       query.date = {};
       if (from) {
-        query.date.$gte = new Date(from);
+        const fromDate = new Date(from);
+        if (!isNaN(fromDate.getTime())) {
+          query.date.$gte = fromDate;
+        }
       }
       if (to) {
-        query.date.$lte = new Date(to);
+        const toDate = new Date(to + 'T23:59:59.999Z'); // End of day
+        if (!isNaN(toDate.getTime())) {
+          query.date.$lte = toDate;
+        }
       }
     }
 
-    // Get exercises with optional limit
-    let exerciseQuery = Exercise.find(query).sort({ date: -1 });
+    // Get exercises with optional limit and sort by date
+    let exerciseQuery = Exercise.find(query).sort({ date: 1 });
     
-    if (limit) {
+    if (limit && !isNaN(parseInt(limit))) {
       exerciseQuery = exerciseQuery.limit(parseInt(limit));
     }
 
     const exercises = await exerciseQuery;
 
-    // Format response
+    // Format response - ensure proper data types
     const log = exercises.map(exercise => ({
-      description: exercise.description,
-      duration: exercise.duration,
+      description: String(exercise.description),
+      duration: Number(exercise.duration),
       date: exercise.date.toDateString()
     }));
 
     res.json({
+      _id: user._id,
       username: user.username,
       count: exercises.length,
-      _id: user._id,
-      log
+      log: log
     });
   } catch (error) {
     res.json({ error: 'Error fetching exercise log' });
