@@ -1,11 +1,739 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>FCC Exercise Tracker</title>
-    <meta charset="utf-8" />
-  </head>
-  <body>
-    <h1>Exercise Tracker API</h1>
-    <p>You can POST and GET to the API routes!</p>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .user-list {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e1e5e9;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .user-item:hover {
+            background: #f8f9fa;
+            transform: translateX(5px);
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .user-id {
+            font-size: 0.9em;
+            color: #666;
+            font-family: monospace;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 14px;
+            min-width: auto;
+        }
+
+        .log-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #28a745;
+        }
+
+        .exercise-log {
+            margin-top: 20px;
+        }
+
+        .exercise-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid #667eea;
+        }
+
+        .exercise-description {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .exercise-details {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .filters input {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+            }
+            
+            .user-actions {
+                flex-direction: column;
+            }
+            
+            .exercise-details {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Exercise Tracker</h1>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalUsers">0</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalExercises">0</div>
+                <div class="stat-label">Total Exercises</div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Create New User</h2>
+            <form id="userForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <button type="submit">Create User</button>
+            </form>
+        </div>
+
+        <div class="form-section">
+            <h2>Add Exercise</h2>
+            <form id="exerciseForm">
+                <div class="form-group">
+                    <label for="userSelect">Select User</label>
+                    <select id="userSelect" name="userId" required>
+                        <option value="">Select a user...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Exercise Description</label>
+                    <input type="text" id="description" name="description" required>
+                </div>
+                <div class="form-group">
+                    <label for="duration">Duration (minutes)</label>
+                    <input type="number" id="duration" name="duration" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date (optional)</label>
+                    <input type="date" id="date" name="date">
+                </div>
+                <button type="submit">Add Exercise</button>
+            </form>
+        </div>
+
+        <div class="user-list">
+            <h2>Users</h2>
+            <div id="usersList"></div>
+        </div>
+
+        <div class="log-section">
+            <h2>Exercise Log</h2>
+            <div class="form-group">
+                <label for="logUserSelect">Select User for Log</label>
+                <select id="logUserSelect">
+                    <option value="">Select a user...</option>
+                </select>
+            </div>
+            <div class="filters">
+                <input type="date" id="fromDate" placeholder="From date">
+                <input type="date" id="toDate" placeholder="To date">
+                <input type="number" id="limit" placeholder="Limit" min="1">
+                <button onclick="fetchLog()">Get Log</button>
+            </div>
+            <div id="logResults"></div>
+        </div>
+
+        <div id="statusMessage"></div>
+    </div>
+
+    <script>
+        // In-memory storage for the demo
+        let users = [];
+        let exercises = [];
+        let nextUserId = 1;
+        let nextExerciseId = 1;
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadInitialData();
+            updateStats();
+            setupEventListeners();
+        });
+
+        function loadInitialData() {
+            // Add some sample data
+            const sampleUsers = [
+                { username: 'john_doe', _id: generateId() },
+                { username: 'jane_smith', _id: generateId() }
+            ];
+            
+            users = sampleUsers;
+            
+            const sampleExercises = [
+                {
+                    _id: generateId(),
+                    userId: users[0]._id,
+                    description: 'Morning run',
+                    duration: 30,
+                    date: new Date('2024-01-15').toDateString()
+                },
+                {
+                    _id: generateId(),
+                    userId: users[0]._id,
+                    description: 'Weight training',
+                    duration: 45,
+                    date: new Date('2024-01-16').toDateString()
+                },
+                {
+                    _id: generateId(),
+                    userId: users[1]._id,
+                    description: 'Yoga session',
+                    duration: 60,
+                    date: new Date('2024-01-17').toDateString()
+                }
+            ];
+            
+            exercises = sampleExercises;
+            
+            updateUsersList();
+            updateUserSelects();
+            updateStats();
+        }
+
+        function generateId() {
+            return Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+        }
+
+        function setupEventListeners() {
+            document.getElementById('userForm').addEventListener('submit', handleCreateUser);
+            document.getElementById('exerciseForm').addEventListener('submit', handleAddExercise);
+            document.getElementById('logUserSelect').addEventListener('change', fetchLog);
+        }
+
+        function handleCreateUser(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const username = formData.get('username');
+            
+            if (!username || username.trim() === '') {
+                showMessage('Username is required', 'error');
+                return;
+            }
+
+            // Check if username already exists
+            if (users.find(user => user.username === username)) {
+                showMessage('Username already exists', 'error');
+                return;
+            }
+
+            const newUser = {
+                username: username.trim(),
+                _id: generateId()
+            };
+
+            users.push(newUser);
+            updateUsersList();
+            updateUserSelects();
+            updateStats();
+            
+            showMessage(`User "${username}" created successfully!`, 'success');
+            e.target.reset();
+        }
+
+        function handleAddExercise(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const userId = formData.get('userId');
+            const description = formData.get('description');
+            const duration = parseInt(formData.get('duration'));
+            const dateInput = formData.get('date');
+
+            if (!userId || !description || !duration) {
+                showMessage('All required fields must be filled', 'error');
+                return;
+            }
+
+            const user = users.find(u => u._id === userId);
+            if (!user) {
+                showMessage('User not found', 'error');
+                return;
+            }
+
+            const exerciseDate = dateInput ? new Date(dateInput) : new Date();
+            
+            const newExercise = {
+                _id: generateId(),
+                userId: userId,
+                description: description.trim(),
+                duration: duration,
+                date: exerciseDate.toDateString()
+            };
+
+            exercises.push(newExercise);
+            updateStats();
+            
+            // Return the response in the expected format
+            const response = {
+                username: user.username,
+                description: newExercise.description,
+                duration: newExercise.duration,
+                date: newExercise.date,
+                _id: user._id
+            };
+
+            showMessage(`Exercise added successfully for ${user.username}!`, 'success');
+            console.log('Exercise added:', response);
+            e.target.reset();
+        }
+
+        function updateUsersList() {
+            const usersList = document.getElementById('usersList');
+            
+            if (users.length === 0) {
+                usersList.innerHTML = '<p class="loading">No users found. Create a user to get started.</p>';
+                return;
+            }
+
+            usersList.innerHTML = users.map(user => `
+                <div class="user-item">
+                    <div class="user-info">
+                        <div class="user-name">${user.username}</div>
+                        <div class="user-id">ID: ${user._id}</div>
+                    </div>
+                    <div class="user-actions">
+                        <button class="btn-small" onclick="selectUserForExercise('${user._id}')">Add Exercise</button>
+                        <button class="btn-small" onclick="selectUserForLog('${user._id}')">View Log</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateUserSelects() {
+            const userSelect = document.getElementById('userSelect');
+            const logUserSelect = document.getElementById('logUserSelect');
+            
+            const options = users.map(user => 
+                `<option value="${user._id}">${user.username}</option>`
+            ).join('');
+
+            userSelect.innerHTML = '<option value="">Select a user...</option>' + options;
+            logUserSelect.innerHTML = '<option value="">Select a user...</option>' + options;
+        }
+
+        function selectUserForExercise(userId) {
+            document.getElementById('userSelect').value = userId;
+            document.getElementById('description').focus();
+        }
+
+        function selectUserForLog(userId) {
+            document.getElementById('logUserSelect').value = userId;
+            fetchLog();
+        }
+
+        function fetchLog() {
+            const userId = document.getElementById('logUserSelect').value;
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            const limit = parseInt(document.getElementById('limit').value) || null;
+            
+            const logResults = document.getElementById('logResults');
+            
+            if (!userId) {
+                logResults.innerHTML = '<p class="loading">Please select a user to view their exercise log.</p>';
+                return;
+            }
+
+            const user = users.find(u => u._id === userId);
+            if (!user) {
+                logResults.innerHTML = '<p class="loading">User not found.</p>';
+                return;
+            }
+
+            let userExercises = exercises.filter(ex => ex.userId === userId);
+            
+            // Apply date filters
+            if (fromDate) {
+                const fromDateObj = new Date(fromDate);
+                userExercises = userExercises.filter(ex => new Date(ex.date) >= fromDateObj);
+            }
+            
+            if (toDate) {
+                const toDateObj = new Date(toDate);
+                userExercises = userExercises.filter(ex => new Date(ex.date) <= toDateObj);
+            }
+            
+            // Apply limit
+            if (limit && limit > 0) {
+                userExercises = userExercises.slice(0, limit);
+            }
+
+            // Sort by date (newest first)
+            userExercises.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const logResponse = {
+                username: user.username,
+                count: userExercises.length,
+                _id: user._id,
+                log: userExercises.map(ex => ({
+                    description: ex.description,
+                    duration: ex.duration,
+                    date: ex.date
+                }))
+            };
+
+            console.log('Log response:', logResponse);
+
+            if (userExercises.length === 0) {
+                logResults.innerHTML = `
+                    <div class="exercise-log">
+                        <h3>${user.username}'s Exercise Log</h3>
+                        <p class="loading">No exercises found for the selected criteria.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            logResults.innerHTML = `
+                <div class="exercise-log">
+                    <h3>${user.username}'s Exercise Log</h3>
+                    <p><strong>Total exercises:</strong> ${userExercises.length}</p>
+                    <div class="exercises">
+                        ${userExercises.map(exercise => `
+                            <div class="exercise-item">
+                                <div class="exercise-description">${exercise.description}</div>
+                                <div class="exercise-details">
+                                    <span><strong>Duration:</strong> ${exercise.duration} minutes</span>
+                                    <span><strong>Date:</strong> ${exercise.date}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateStats() {
+            const totalUsers = users.length;
+            const totalExercises = exercises.length;
+            
+            document.getElementById('totalUsers').textContent = totalUsers;
+            document.getElementById('totalExercises').textContent = totalExercises;
+        }
+
+        function showMessage(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+            
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+            }, 3000);
+        }
+
+        // API endpoints simulation for testing
+        window.api = {
+            // POST /api/users
+            createUser: function(username) {
+                if (!username || username.trim() === '') {
+                    return { error: 'Username is required' };
+                }
+                
+                if (users.find(user => user.username === username)) {
+                    return { error: 'Username already exists' };
+                }
+                
+                const newUser = {
+                    username: username.trim(),
+                    _id: generateId()
+                };
+                
+                users.push(newUser);
+                updateUsersList();
+                updateUserSelects();
+                updateStats();
+                
+                return newUser;
+            },
+
+            // GET /api/users
+            getUsers: function() {
+                return users.map(user => ({
+                    username: user.username,
+                    _id: user._id
+                }));
+            },
+
+            // POST /api/users/:_id/exercises
+            addExercise: function(userId, description, duration, date) {
+                const user = users.find(u => u._id === userId);
+                if (!user) {
+                    return { error: 'User not found' };
+                }
+
+                const exerciseDate = date ? new Date(date) : new Date();
+                
+                const newExercise = {
+                    _id: generateId(),
+                    userId: userId,
+                    description: description.trim(),
+                    duration: parseInt(duration),
+                    date: exerciseDate.toDateString()
+                };
+
+                exercises.push(newExercise);
+                updateStats();
+                
+                return {
+                    username: user.username,
+                    description: newExercise.description,
+                    duration: newExercise.duration,
+                    date: newExercise.date,
+                    _id: user._id
+                };
+            },
+
+            // GET /api/users/:_id/logs
+            getUserLogs: function(userId, from, to, limit) {
+                const user = users.find(u => u._id === userId);
+                if (!user) {
+                    return { error: 'User not found' };
+                }
+
+                let userExercises = exercises.filter(ex => ex.userId === userId);
+                
+                // Apply date filters
+                if (from) {
+                    const fromDateObj = new Date(from);
+                    userExercises = userExercises.filter(ex => new Date(ex.date) >= fromDateObj);
+                }
+                
+                if (to) {
+                    const toDateObj = new Date(to);
+                    userExercises = userExercises.filter(ex => new Date(ex.date) <= toDateObj);
+                }
+                
+                // Apply limit
+                if (limit && limit > 0) {
+                    userExercises = userExercises.slice(0, parseInt(limit));
+                }
+
+                return {
+                    username: user.username,
+                    count: userExercises.length,
+                    _id: user._id,
+                    log: userExercises.map(ex => ({
+                        description: ex.description,
+                        duration: ex.duration,
+                        date: ex.date
+                    }))
+                };
+            }
+        };
+
+        // Expose API for testing
+        console.log('Exercise Tracker API is available at window.api');
+        console.log('Available methods:');
+        console.log('- window.api.createUser(username)');
+        console.log('- window.api.getUsers()');
+        console.log('- window.api.addExercise(userId, description, duration, date)');
+        console.log('- window.api.getUserLogs(userId, from, to, limit)');
+    </script>
+</body>
 </html>
